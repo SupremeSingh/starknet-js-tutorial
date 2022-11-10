@@ -1,0 +1,22 @@
+{
+  "name": "deploy-token-with-starknet",
+  "version": "1.0.0",
+  "description": "Deploying contracts with StarkNet ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "starknet-compile src/$npm_config_contract.cairo --output builds/$npm_config_contract.json"
+  },
+  "keywords": [
+    "Starknet",
+    "Javascript",
+    "blockchain"
+  ],
+  "author": "Idris Olubisi",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "starknet": "^4.10.0"
+  },
+  "type": "module"
+}
