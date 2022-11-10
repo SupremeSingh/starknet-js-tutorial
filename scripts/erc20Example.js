@@ -30,7 +30,7 @@ console.log(`Account has a nonce of ${account_nonce}`);
 
 console.log(
   `////////////////////////////////////////////////////////////////////////////////
-    Estimating gas fees and minting tokens to ${account.address}...
+    Estimating gas fees and minting 20 tokens to ${account.address}...
    ////////////////////////////////////////////////////////////////////////////////`
 );
 
@@ -64,7 +64,7 @@ console.log(
 
 await provider.waitForTransaction(transferTxHash);
 
-// Check balance after transfer - should be 480
+// Check balance after transfer - should be 20
 console.log(`Calling StarkNet for account balance...`);
 const balanceAfterTransfer = await erc20.balance_of(account.address);
 

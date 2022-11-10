@@ -17,7 +17,7 @@ const compiledErc20 = json.parse(
 
 // Deploy an ERC20 contract and wait for it to be verified on StarkNet.
 console.log("Deployment Tx - ERC20 Contract to StarkNet...");
-const erc20Response = await defaultProvider.deployContract({
+const erc20Response = await provider.deployContract({
   contract: compiledErc20,
   // constructorCalldata: [account.address],
 });
