@@ -14,13 +14,6 @@ let erc20 = new Contract(compiledErc20.abi, erc20Address, provider);
 
 erc20.connect(account);
 
-// Mint 500 tokens to account address
-console.log(
-  `////////////////////////////////////////////////////////////////////////////////
-    Account Connected to ERC20 Contract, Minting 500 tokens to ${account.address} \n...
-   ////////////////////////////////////////////////////////////////////////////////`
-);
-
 // Check balance -
 console.log(`Calling StarkNet for account balance...`);
 
@@ -35,12 +28,16 @@ let account_nonce_bn = await account.getNonce();
 const account_nonce = number.toBN(account_nonce_bn).toNumber();
 console.log(`Account has a nonce of ${account_nonce}`);
 
-// Estimate gas
+console.log(
+  `////////////////////////////////////////////////////////////////////////////////
+    Estimating gas fees and minting tokens to ${account.address}...
+   ////////////////////////////////////////////////////////////////////////////////`
+);
 
 const { overall_fee } = await account.estimateInvokeFee(
   {
     contractAddress: erc20.address,
-    entrypoint: "transfer",
+    entrypoint: "mint",
     calldata: [erc20.address, "20", '0'],
   },
 );
@@ -51,8 +48,8 @@ console.log(`A transfer will cost you ${number.toBN(overall_fee).toString()} gas
 const { transaction_hash } = await account.execute(
   {
     contractAddress: erc20Address,
-    entrypoint: 'transfer',
-    calldata: [account.address, '10', '0'],
+    entrypoint: 'mint',
+    calldata: [account.address, '20', '0'],
   },
   undefined,
   { account_nonce }
