@@ -5,7 +5,9 @@
   "main": "deploy/deployAccount.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "starknet-compile src/$npm_config_contract.cairo --output builds/$npm_config_contract.json"
+    "devnet": "starknet-devnet --lite-mode --seed 0",
+    "lint": "eslint --fix --ext .js .",
+    "stop-devnet": "pkill starknet-devnet || /bin/true"
   },
   "keywords": [
     "Starknet",
@@ -18,5 +20,8 @@
     "dotenv": "^16.0.3",
     "starknet": "^4.10.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.27.0"
+  }
 }

@@ -10,8 +10,6 @@ const compiledOZAccount = json.parse(
   fs.readFileSync("builds/OZAccount.json").toString("ascii")
 );
 
-console.log("here");
-
 // Generate public and private key pair.
 const privateKey = stark.randomAddress();
 
@@ -19,7 +17,6 @@ const starkKeyPair = ec.genKeyPair(privateKey);
 const starkKeyPub = ec.getStarkKey(starkKeyPair);
 
 // Log the Public and Private key pair.
-console.log(`Key Pair: ${JSON.stringify(starkKeyPair, null, 2)}`);
 console.log(`Private key: ${privateKey}`);
 console.log(`Public key: ${starkKeyPub}`);
 

@@ -7,9 +7,16 @@ dotenv.config();
 export function getProvider() {
     // Initialize provider
     const INFURA_ID = process.env.INFURA_ID;
+    const USE_DEVNET = process.env.USE_DEVNET;
 
-    if (!INFURA_ID) {
-        throw "Please provide the environment variable: INFURA_ID";
+    if (USE_DEVNET == "true") {
+        return new Provider({
+          sequencer: {
+            baseUrl: 'http://localhost:5050',
+            feederGatewayUrl: 'feeder_gateway',
+            gatewayUrl: 'gateway',          
+          }
+        })
     }
     return new Provider({
         rpc: {
@@ -18,12 +25,9 @@ export function getProvider() {
       });
 } 
 
-export function getAccountFromPk(provider) {
-  let address = process.env.ACCOUNT_ADDRESS;
-  let privateKey = process.env.PRIVATE_KEY;
-
+export function getAccountFromPk(accountAddress = process.env.GOERLI_ACCOUNT_ADDRESS, privateKey = process.env.GOERLI_PRIVATE_KEY, provider) {
   const starkKeyPair = ec.getKeyPair(privateKey);
-  return new Account(provider, address, starkKeyPair);
+  return new Account(provider, accountAddress, starkKeyPair);
 }
 
 export function askQuestion(query) {

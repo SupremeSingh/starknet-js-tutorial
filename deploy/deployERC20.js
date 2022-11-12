@@ -1,14 +1,11 @@
 import dotenv from "dotenv";
 import fs from "fs";
-import { getAccountFromPk, getProvider } from "../scripts/helpers.js";
+import { getProvider } from "../scripts/helpers.js";
 import { Contract, json } from "starknet";
 
 dotenv.config();
 
 let provider = getProvider();
-let account = getAccountFromPk(provider);
-
-console.log(account);
 
 console.log("Reading ERC20 Contract...");
 const compiledErc20 = json.parse(
