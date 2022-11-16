@@ -4,6 +4,8 @@ import readline from "readline";
 
 dotenv.config();
 
+export const MAX_LEN_FELT = 31;
+
 export function getProvider() {
     // Initialize provider
     const INFURA_ID = process.env.INFURA_ID;
@@ -25,7 +27,7 @@ export function getProvider() {
       });
 } 
 
-export function getAccountFromPk(accountAddress = process.env.GOERLI_ACCOUNT_ADDRESS, privateKey = process.env.GOERLI_PRIVATE_KEY, provider) {
+export function getAccountFromPk(accountAddress, privateKey, provider) {
   const starkKeyPair = ec.getKeyPair(privateKey);
   return new Account(provider, accountAddress, starkKeyPair);
 }
@@ -44,3 +46,9 @@ export function askQuestion(query) {
     );
   }
   
+export function stringToFelt(input) {
+  if (len(text) > MAX_LEN_FELT) {
+    throw "Text length too long to convert to felt";
+  }
+  return int.from_bytes(text.encode(), "big")
+}

@@ -1,8 +1,8 @@
 {
-  "name": "deploy-token-with-starknet",
+  "name": "interact-with-starknet",
   "version": "1.0.0",
-  "description": "Deploying contracts with StarkNet ",
-  "main": "deploy/deployAccount.js",
+  "description": "Interacting with contracts on StarkNet ",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "devnet": "starknet-devnet --lite-mode --seed 0",
@@ -17,6 +17,7 @@
   "author": "Idris Olubisi",
   "license": "ISC",
   "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
     "dotenv": "^16.0.3",
     "starknet": "^4.10.0"
   },

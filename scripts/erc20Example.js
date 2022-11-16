@@ -1,16 +1,27 @@
 import fs from "fs";
+import dotenv from "dotenv";
 import { getAccountFromPk, getProvider } from "../scripts/helpers.js";
 import { Contract, json, number } from "starknet";
 
-//-------------- Devnet deployementy addresses
-const erc20Address = "0x04c1d52cc97d9fcd52fce2d0c1b3d11390bd027842b85c35e386837de485af34";
+dotenv.config();
+
+//-------------- Devnet deployement addresses
+const erc20Address = "0x0266db82e38d74593aebd3450b58c0f953a9e683c9345a2ae6b9eea6679eca2d";
 const devnetAddr1 = "0x69b49c2cc8b16e80e86bfc5b0614a59aa8c9b601569c7b80dde04d3f3151b79";
 const devnetAddr0 = "0x7e00d496e324876bbc8531f2d9a82bf154d1a04a50218ee74cdd372f75a551a"
 const devnetPK = "0xe3e70682c2094cac629f6fbed82c07cd"
-//--------------
+
+
+/*-------------- Goerli deployement addresses
+const goerliAddress = process.env.GOERLI_ACCOUNT_ADDRESS;
+const goerliPK = process.env.GOERLI_PRIVATE_KEY;   
+const erc20Address = "0x7a7daef82e3afed06ce295d48c3f66a9c6de13e9d48f318dc28cc6d49516b3f";
+*/
 
 let provider = getProvider();
 let account = getAccountFromPk(devnetAddr0, devnetPK, provider);
+
+console.log(account)
 
 console.log("Reading ERC20 Contract...\n");
 const compiledErc20 = json.parse(
@@ -31,20 +42,18 @@ console.log(
   number.toBN(initialBalance.res, 16).toString()
 );
 
-let account_nonce_bn = await account.getNonce();
-
+const account_nonce_bn = await account.getNonce();
 const account_nonce = number.toBN(account_nonce_bn).toNumber();
 console.log(`Account has a nonce of ${account_nonce}`);
 
 // Minting tokens to address
-const { mint_transaction_hash } = await erc20.mint(
-  account.address,
-  "500",
-  {
-    maxFee: "999999995330000",
-    account_nonce
-  }
-);
+const mintResponse = await account.execute({
+  contractAddress: erc20Address,
+  entrypoint: 'mint',
+  calldata: [account.address, '1000'],
+});
+
+await provider.waitForTransaction(mintResponse.transaction_hash);
 
 // Wait for the invoke transaction to be accepted on StarkNet
 console.log(
@@ -53,7 +62,7 @@ console.log(
   ////////////////////////////////////////////////////////////////////////////////\n`
   );
   
-  await provider.waitForTransaction(mint_transaction_hash);
+await provider.waitForTransaction(mintResponse.transaction_hash);
 
 // Check balance after Mint - should be 500
 console.log(`Calling StarkNet for account balance...\n`);
@@ -64,19 +73,20 @@ console.log(
   number.toBN(balanceAfterMint.res, 16).toString()
 );
 
+
 console.log(
   `////////////////////////////////////////////////////////////////////////////////
-    Estimating gas costs for the user now ...
+   Estimating gas fees for a simple transfer operation ...
   ////////////////////////////////////////////////////////////////////////////////\n`
   );
 
-const { overall_fee } = await account.estimateInvokeFee({
-  contractAddress: erc20Address,
-  entrypoint: 'transfer',
-  calldata: [devnetAddr1, "500"],
-});
+  const { overall_fee } = await account.estimateInvokeFee({
+    contractAddress: erc20Address,
+    entrypoint: 'transfer',
+    calldata: [devnetAddr1, '500'],
+  });
 
-console.log(`It will cost you around ${overall_fee} to run this transaction`)
+console.log(`This transaction will cost you ${overall_fee} units of gas`);  
 
 console.log(
 `////////////////////////////////////////////////////////////////////////////////
@@ -85,18 +95,16 @@ console.log(
 );
 
 // Execute transfer of ERC20 tokens
-const { code, transfer_transaction_hash } = await account.execute(
+const { transfer_transaction_hash } = await account.execute(
   {
     contractAddress: erc20Address,
     entrypoint: 'transfer',
-    calldata: [devnetAddr1, "500"],
+    calldata: [devnetAddr1, '500'],
   },
   undefined,
-  {
-    maxFee: "999999995330000",
-    nonce: account_nonce + 1
-  }
+  { account_nonce }
 );
+
 
 // Wait for the invoke transaction to be accepted on StarkNet
 console.log(
